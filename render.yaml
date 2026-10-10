@@ -13,12 +13,9 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: e-rakshak-redis
-          property: connectionString
+        sync: false        # paste your existing Render Redis internal URL here
       - key: ELASTICSEARCH_URL
-        sync: false        # point at an external ES cluster (e.g. Elastic Cloud)
+        sync: false
       - key: ALLOW_DB_FALLBACK
         value: "0"
       - key: ALLOW_DEV_JWT_SECRET
@@ -43,16 +40,6 @@ services:
     plan: free
     envVars:
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: e-rakshak-redis
-          property: connectionString
+        sync: false        # paste your existing Render Redis internal URL here
       - key: INGESTION_SAMPLES_DIR
         value: /tmp/ingestion_samples
-
-  # ── Redis ─────────────────────────────────────────────────────────────────
-  - type: redis
-    name: e-rakshak-redis
-    plan: free
-    maxmemoryPolicy: noeviction
-    ipAllowList: []   # empty = allow all (Render internal traffic only)
