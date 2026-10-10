@@ -5,7 +5,7 @@ services:
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
-    plan: starter          # upgrade to standard/pro for more RAM
+    plan: free
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
@@ -40,7 +40,7 @@ services:
     runtime: docker
     dockerfilePath: ./ingestion/Dockerfile
     dockerContext: .
-    plan: starter
+    plan: free
     envVars:
       - key: REDIS_URL
         fromService:
@@ -53,6 +53,6 @@ services:
   # ── Redis ─────────────────────────────────────────────────────────────────
   - type: redis
     name: e-rakshak-redis
-    plan: starter
+    plan: free
     maxmemoryPolicy: noeviction
     ipAllowList: []   # empty = allow all (Render internal traffic only)
