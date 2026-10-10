@@ -19,6 +19,8 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY agents agents
 COPY backend backend
 COPY storage storage
+COPY dynamic-sandbox dynamic-sandbox
+COPY ingestion ingestion
 
 ENV PYTHONPATH=/app
 EXPOSE 8000
