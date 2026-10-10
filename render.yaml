@@ -55,3 +55,4 @@ services:
     name: e-rakshak-redis
     plan: starter
     maxmemoryPolicy: noeviction
+    ipAllowList: []   # empty = allow all (Render internal traffic only)
