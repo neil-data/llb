@@ -1,0 +1,57 @@
+services:
+  # ── Backend (FastAPI) ─────────────────────────────────────────────────────
+  - type: web
+    name: e-rakshak-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: starter          # upgrade to standard/pro for more RAM
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false        # set manually in Render dashboard
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: e-rakshak-redis
+          property: connectionString
+      - key: ELASTICSEARCH_URL
+        sync: false        # point at an external ES cluster (e.g. Elastic Cloud)
+      - key: ALLOW_DB_FALLBACK
+        value: "0"
+      - key: ALLOW_DEV_JWT_SECRET
+        value: "0"
+      - key: CORS_ORIGINS
+        sync: false        # e.g. https://your-frontend.vercel.app
+      - key: GROQ_API_KEY
+        sync: false
+      - key: MALWARE_BAZAAR_API_KEY
+        sync: false
+      - key: GEOIP_DB_PATH
+        sync: false
+      - key: INGESTION_SAMPLES_DIR
+        value: /tmp/ingestion_samples
+
+  # ── Ingestion Gateway ─────────────────────────────────────────────────────
+  - type: web
+    name: e-rakshak-ingestion
+    runtime: docker
+    dockerfilePath: ./ingestion/Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: e-rakshak-redis
+          property: connectionString
+      - key: INGESTION_SAMPLES_DIR
+        value: /tmp/ingestion_samples
+
+  # ── Redis ─────────────────────────────────────────────────────────────────
+  - type: redis
+    name: e-rakshak-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
